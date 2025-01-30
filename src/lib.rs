@@ -63,13 +63,11 @@ pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str
     #[cfg(unix)]
     let library_name = format!("lib{}", constants::LIBRARY);
     #[cfg(windows)]
-    let library_name = constants::LIBRARY;
-
-    let library_path = std::env::current_exe()
+    let library_name = std::env::current_exe()
         .unwrap()
         .parent()
         .unwrap()
-        .join(library_name)
+        .join(constants::LIBRARY)
         .to_string_lossy()
         .to_string();
 
@@ -89,7 +87,7 @@ pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str
     let discord_dir = discord_dir.to_string_lossy().to_string();
     let asar_path = asar.to_string_lossy().to_string();
 
-    electron_hook::launch(&discord_dir, &library_path, &asar_path, vec![], false).unwrap();
+    electron_hook::launch(&discord_dir, &library_name, &asar_path, vec![], false).unwrap();
 }
 
 async fn download_assets() -> Option<()> {
