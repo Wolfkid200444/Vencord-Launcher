@@ -468,9 +468,9 @@ checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
 
 [[package]]
 name = "electron-hook"
-version = "0.2.0-beta.9"
+version = "0.2.0-beta.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94c46eda4e126a9f28eae5abd24221440401c1f6b58a08c15c1d1ae7998cee3f"
+checksum = "8402c957d0deb19398f6882a037e1d0698e5b2a013eb52222222cdafd4b5a0c3"
 dependencies = [
  "asar",
  "detours-sys",

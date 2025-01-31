@@ -61,6 +61,7 @@ jobs:
           cp target/release/vencord-ptb artifacts/linux/
           cp target/release/vencord-canary artifacts/linux/
           cp target/release/libvencord_launcher.so artifacts/linux/
+          cp installers/linux-sh/install.sh artifacts/linux/
 
       - name: Bundle Linux artifacts
         if: startsWith(matrix.os, 'ubuntu')

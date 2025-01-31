@@ -9,7 +9,12 @@ fi
 
 GITHUB_ORG="MeguminSama"
 REPO_NAME="Vencord-Launcher"
-ASSET_NAME="Vencord${BRANCH^}-"
+
+if [[ "$BRANCH" == "ptb" ]]; then
+    ASSET_NAME="Vencord${BRANCH^^}-"
+else
+    ASSET_NAME="Vencord${BRANCH^}-"
+fi
 
 LATEST_RELEASE=$(curl -s "https://api.github.com/repos/$GITHUB_ORG/$REPO_NAME/releases/latest")
 
@@ -42,8 +47,6 @@ else
     exit 1
 fi
 
-echo "Extracting $ASSET_FILENAME..."
-
 tar -xzf "$TEMP_DIR/$ASSET_FILENAME" -C "$TEMP_DIR"
 
 if [ $? -eq 0 ]; then
@@ -57,9 +60,16 @@ fi
 echo "Installing Vencord $BRANCH $VERSION..."
 
 sudo install -m 755 "$TEMP_DIR/vencord-$BRANCH" /usr/local/bin/
+
+OTHER_BRANCHES=$(ls /usr/local/bin | grep 'vencord-' | grep -v "vencord-$BRANCH")
+
+if [ -n "$OTHER_BRANCHES" ]; then
+    # TODO: Maybe add a version flag to check if the other branches are outdated?
+    echo "Warning: The following Vencord branches are also installed. If they are outdated, consider updating them too:"
+    echo "$OTHER_BRANCHES"
+fi
+
 sudo install -m 644 "$TEMP_DIR/libvencord_launcher.so" /usr/local/lib/
-
-
-sudo cp "$TEMP_DIR/libvencord_launcher.so" /usr/local/lib/
+sudo ldconfig /usr/local/lib
 
 rm -r "$TEMP_DIR"

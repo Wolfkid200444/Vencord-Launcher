@@ -1,10 +1,8 @@
-use discord::DiscordBranch;
 // For compiling the modloader DLL:
 pub use electron_hook::*;
 
-use std::collections::HashMap;
-use tinyjson::JsonValue;
-use tokio::task::JoinSet;
+pub mod constants;
+pub mod discord;
 
 // Library for the binaries to use:
 #[cfg(windows)]
@@ -13,15 +11,10 @@ pub mod windows;
 #[cfg(windows)]
 pub use windows::*;
 
-#[cfg(unix)]
-pub mod unix;
-
-#[cfg(unix)]
-pub use unix::*;
-
-pub mod discord;
-
-pub mod constants;
+use discord::DiscordBranch;
+use std::collections::HashMap;
+use tinyjson::JsonValue;
+use tokio::task::JoinSet;
 
 struct GithubRelease {
     pub tag_name: String,
@@ -87,7 +80,7 @@ pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str
     let discord_dir = discord_dir.to_string_lossy().to_string();
     let asar_path = asar.to_string_lossy().to_string();
 
-    electron_hook::launch(&discord_dir, &library_name, &asar_path, vec![], false).unwrap();
+    electron_hook::launch(&discord_dir, &library_name, &asar_path, vec![], true).unwrap();
 }
 
 async fn download_assets() -> Option<()> {
@@ -111,8 +104,13 @@ async fn download_assets() -> Option<()> {
         None
     };
 
-    // Get the latest release manifest from GitHub.
+    // Get the latest release manifest from GitHub. If it fails, try the fallback.
+    println!("[Vencord Launcher] Checking for updates...");
     let mut response = ureq::get(constants::RELEASE_URL).call().ok()?;
+    if response.status() != 200 {
+        println!("[Vencord Launcher] GitHub ratelimited... Trying fallback...");
+        response = ureq::get(constants::RELEASE_URL_FALLBACK).call().ok()?;
+    }
     let body = response.body_mut().read_to_string().ok()?;
 
     let json: JsonValue = body.parse().ok()?;
@@ -127,6 +125,8 @@ async fn download_assets() -> Option<()> {
             return Some(());
         }
     }
+
+    println!("[Vencord Launcher] An update is available... Downloading...");
 
     // Loop over the assets and find the ones we want.
     let assets: &Vec<_> = object.get("assets")?.get()?;

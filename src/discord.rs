@@ -25,7 +25,9 @@ pub fn get_discord(branch: DiscordBranch) -> Option<PathBuf> {
         return None;
     }
 
-    Some(dir)
+    let executable = get_latest_executable(&dir).ok()?;
+
+    Some(executable)
 }
 
 #[cfg(target_os = "linux")]
@@ -44,7 +46,6 @@ pub fn get_discord(branch: DiscordBranch) -> Option<PathBuf> {
     let executable = local_share.join(name).join(name);
 
     if executable.is_file() {
-        dbg!(&executable);
         return Some(executable);
     }
 
@@ -53,43 +54,10 @@ pub fn get_discord(branch: DiscordBranch) -> Option<PathBuf> {
     let executable = dirs::home_dir()?.join(format!(".dvm/branches/{dvm_branch}/{name}/{name}"));
 
     if executable.is_file() {
-        dbg!(&executable);
         return Some(executable);
     }
 
     // FIXME: Flatpak Support https://github.com/MeguminSama/Vencord-Launcher/issues/1
-    // let (rdns, name, exec) = match branch {
-    //     DiscordBranch::Stable => ("com.discordapp.Discord", "discord", "Discord"),
-    //     DiscordBranch::PTB => ("com.discordapp.DiscordPTB", "discord-ptb", "DiscordPTB"),
-    //     DiscordBranch::Canary => (
-    //         "com.discordapp.DiscordCanary",
-    //         "discord-canary",
-    //         "discordCanary",
-    //     ),
-    //     DiscordBranch::Development => (
-    //         "com.discordapp.DiscordDevelopment",
-    //         "discord-development",
-    //         "DiscordDevelopment",
-    //     ),
-    // };
-
-    // let flatpak_path = format!("flatpak/app/{rdns}/current/active/files/{name}");
-
-    // let executable = local_share.join(&flatpak_path).join(exec);
-
-    // if executable.is_file() {
-    //     dbg!(&executable);
-    //     return Some(executable);
-    // }
-
-    // // If that fails, try flatpak (system).
-    // // /var/lib
-    // let executable = PathBuf::from(format!("/var/lib/{flatpak_path}/{exec}"));
-
-    // if executable.is_file() {
-    //     dbg!(&executable);
-    //     return Some(executable);
-    // }
 
     None
 }
