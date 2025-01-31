@@ -4,7 +4,7 @@ Quickly and conveniently launch Vencord.
 
 # Windows
 
-Download and run [The latest installer](https://github.com/MeguminSama/Vencord-Launcher/releases/latest/download/VencordInstaller.exe) and pick the branches of Discord you want.
+Download and run [the latest installer](https://github.com/MeguminSama/Vencord-Launcher/releases/latest/download/VencordInstaller.exe) and pick the branches of Discord you want.
 
 # Linux
 
