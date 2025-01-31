@@ -84,14 +84,14 @@ fi
 
 HICOLOR="/usr/share/icons/hicolor"
 
-sudo install -Dm644 "$TEMP_DIR/icons/icon-16x16.png" "$HICOLOR/16x16/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-32x32.png" "$HICOLOR/32x32/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-48x48.png" "$HICOLOR/48x48/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-64x64.png" "$HICOLOR/64x64/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-128x128.png" "$HICOLOR/128x128/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-256x256.png" "$HICOLOR/256x256/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-512x512.png" "$HICOLOR/512x512/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-1024x1024.png" "$HICOLOR/1024x1024/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-16x16.png" "$HICOLOR/16x16/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-32x32.png" "$HICOLOR/32x32/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-48x48.png" "$HICOLOR/48x48/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-64x64.png" "$HICOLOR/64x64/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-128x128.png" "$HICOLOR/128x128/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-256x256.png" "$HICOLOR/256x256/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-512x512.png" "$HICOLOR/512x512/apps/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-1024x1024.png" "$HICOLOR/1024x1024/apps/vencord-$BRANCH.png"
 
 sudo gtk-update-icon-cache /usr/share/icons/hicolor/ || true
 
