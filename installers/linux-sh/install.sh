@@ -91,7 +91,7 @@ fi
 $PRIV_ESC install -Dm 644 "$TEMP_DIR/libvencord_launcher.so" /usr/lib/
 $PRIV_ESC ldconfig /usr/lib
 
-if [[ $BRANCH == "stable" ]]; then
+if [ "$BRANCH" = "stable" ]; then
     DESKTOP_ENTRY_NAME="Vencord"
     DESKTOP_ENTRY_FILENAME="vencord.desktop"
 else
