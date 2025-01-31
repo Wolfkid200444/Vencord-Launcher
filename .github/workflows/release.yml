@@ -62,18 +62,19 @@ jobs:
           cp target/release/vencord-canary artifacts/linux/
           cp target/release/libvencord_launcher.so artifacts/linux/
           cp installers/linux-sh/install.sh artifacts/linux/
-          cp installers/assets/icon.png artifacts/linux/
+          mkdir -p artifacts/linux/icons
+          cp installers/assets/icon-*.png artifacts/linux/icons/
 
       - name: Bundle Linux artifacts
         if: startsWith(matrix.os, 'ubuntu')
         run: |
           cd artifacts/linux
 
-          tar -czf VencordStable-${{ github.ref_name }}.tar.gz vencord-stable libvencord_launcher.so icon.png
-          tar -czf VencordPTB-${{ github.ref_name }}.tar.gz vencord-ptb libvencord_launcher.so icon.png
-          tar -czf VencordCanary-${{ github.ref_name }}.tar.gz vencord-canary libvencord_launcher.so icon.png
+          tar -czf VencordStable-${{ github.ref_name }}.tar.gz vencord-stable libvencord_launcher.so icons
+          tar -czf VencordPTB-${{ github.ref_name }}.tar.gz vencord-ptb libvencord_launcher.so icons
+          tar -czf VencordCanary-${{ github.ref_name }}.tar.gz vencord-canary libvencord_launcher.so icons
 
-          rm vencord-stable vencord-ptb vencord-canary libvencord_launcher.so
+          rm -r vencord-stable vencord-ptb vencord-canary libvencord_launcher.so icons
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
