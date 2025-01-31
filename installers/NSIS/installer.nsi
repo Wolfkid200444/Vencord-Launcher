@@ -19,6 +19,7 @@
 	OutFile "Vencord Installer.exe"
 	Icon "${ASSETS_ROOT}\icon.ico"
 	Unicode True
+	BrandingText "Vencord Installer"
 
 	;Default installation folder
 	InstallDir "$LOCALAPPDATA\VencordLauncher"
