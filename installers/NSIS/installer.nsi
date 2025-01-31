@@ -56,12 +56,14 @@
 
 	 !insertmacro MUI_PAGE_WELCOME
 ;	 !insertmacro MUI_PAGE_LICENSE "${NSISDIR}\Docs\Modern UI\License.txt"
+	!define MUI_PAGE_CUSTOMFUNCTION_LEAVE InstallLeave
 	!insertmacro MUI_PAGE_COMPONENTS
 	!insertmacro MUI_PAGE_DIRECTORY
 	!insertmacro MUI_PAGE_INSTFILES
 	!insertmacro MUI_PAGE_FINISH
 
 	!insertmacro MUI_UNPAGE_WELCOME
+	!define MUI_PAGE_CUSTOMFUNCTION_LEAVE un.InstallLeave
 	!insertmacro MUI_UNPAGE_COMPONENTS
 	!insertmacro MUI_UNPAGE_CONFIRM
 	!insertmacro MUI_UNPAGE_INSTFILES
@@ -168,3 +170,81 @@ FunctionEnd
 		!insertmacro MUI_DESCRIPTION_TEXT ${UninstallCanary} $(DESC_UninstallCanary)
 	!insertmacro MUI_UNFUNCTION_DESCRIPTION_END
 
+
+!addplugindir "plugins"
+
+!define FindProc_NOT_FOUND 1
+!define FindProc_FOUND 0
+!macro FindProc result processName
+    ExecDos::exec "%SystemRoot%\System32\tasklist /NH /FI $\"IMAGENAME eq Discord.exe$\" 2>NUL | %SystemRoot%\System32\find /I $\"Discord.exe$\"" 
+	; ExecCmd::exec "%SystemRoot%\System32\tasklist /NH /FI $\"IMAGENAME eq ${processName}$\" | %SystemRoot%\System32\find /I $\"${processName}$\"" 
+    Pop $0 ; The handle for the process
+    ExecDos::wait $0
+    Pop ${result} ; The exit code
+!macroend
+
+
+!macro check_running_discord un
+Function ${un}CheckRunningDiscord
+	
+	SectionGetFlags ${InstallStable} $0
+	SectionGetFlags ${InstallPTB} $1
+	SectionGetFlags ${InstallCanary} $2
+
+	IntOp $0 $0 | $1
+	IntOp $0 $0 | $2
+	${If} $0 == 0
+		MessageBox MB_OK|MB_ICONEXCLAMATION "Please select at least one version of Vencord for Discord to install."
+		Abort
+	${EndIf}
+
+	
+	SectionGetFlags ${InstallStable} $0
+	SectionGetFlags ${InstallPTB} $1
+	SectionGetFlags ${InstallCanary} $2
+
+	${If} $0 & ${SF_SELECTED}
+		NsProcessW::_FindProcess "Discord.exe"
+		Pop $R0
+
+		${If} $R0 == 0
+			MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Discord is running. Click OK to terminate it." /SD IDOK IDCANCEL +2
+			NsProcessW::_KillProcess "Discord.exe"
+			Abort
+		${EndIf}
+	${EndIf}
+
+	${If} $1 & ${SF_SELECTED}
+		NsProcessW::_FindProcess "DiscordPTB.exe"
+		Pop $R0
+
+		${If} $R0 == 0
+			MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Discord PTB is running. Click OK to terminate it." /SD IDOK IDCANCEL +2
+			NsProcessW::_KillProcess "DiscordPTB.exe"
+			Abort
+		${EndIf}
+	${EndIf}
+
+	${If} $2 & ${SF_SELECTED}
+		NsProcessW::_FindProcess "DiscordCanary.exe"
+		Pop $R0
+
+		${If} $R0 == 0
+			MessageBox MB_OKCANCEL|MB_ICONEXCLAMATION "Discord Canary is running. Click OK to terminate it." /SD IDOK IDCANCEL +2
+			NsProcessW::_KillProcess "DiscordCanary.exe"
+			Abort
+		${EndIf}
+	${EndIf}
+FunctionEnd
+!macroend
+
+!insertmacro check_running_discord ""
+!insertmacro check_running_discord "un."
+
+Function InstallLeave
+	Call CheckRunningDiscord
+FunctionEnd
+
+Function un.InstallLeave
+	Call un.CheckRunningDiscord
+FunctionEnd
