@@ -13,20 +13,26 @@ fi
 
 BRANCH="${1:-stable}"
 
-if [[ ! "$BRANCH" =~ ^(stable|canary|ptb)$ ]]; then
-    echo "Invalid branch: $BRANCH. Please choose 'stable', 'canary', or 'ptb'."
-    exit 1
-fi
+case "$BRANCH" in
+    stable|canary|ptb)
+        # Valid branch, do nothing
+        ;;
+    *)
+        echo "Invalid branch: $BRANCH. Please choose 'stable', 'canary', or 'ptb'."
+        exit 1
+        ;;
+esac
 
 GITHUB_ORG="MeguminSama"
 REPO_NAME="Vencord-Launcher"
 
-if [[ "$BRANCH" == "ptb" ]]; then
+# Convert BRANCH to uppercase or capitalize as needed
+if [ "$BRANCH" = "ptb" ]; then
     BRANCH_UPPER="PTB"
-    ASSET_NAME="Vencord${BRANCH^^}-"
+    ASSET_NAME="VencordPTB-"
 else
-    BRANCH_UPPER="${BRANCH^}"
-    ASSET_NAME="Vencord${BRANCH^}-"
+    BRANCH_UPPER=$(echo "$BRANCH" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
+    ASSET_NAME="Vencord${BRANCH_UPPER}-"
 fi
 
 LATEST_RELEASE=$(curl -s "https://api.github.com/repos/$GITHUB_ORG/$REPO_NAME/releases/latest")
