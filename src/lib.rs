@@ -70,17 +70,25 @@ pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str
         .to_string()
         .replace("\\", "\\\\");
 
+    let branch_name = match branch {
+        DiscordBranch::Stable => "stable",
+        DiscordBranch::PTB => "ptb",
+        DiscordBranch::Canary => "canary",
+        DiscordBranch::Development => "development",
+    };
+
     let asar = electron_hook::asar::Asar::new()
         .with_id(instance_id)
         .with_mod_entrypoint(&mod_entrypoint)
         .with_template("require('$ENTRYPOINT');")
+        .with_wm_class(&format!("vencord-{branch_name}"))
         .create()
         .unwrap();
 
     let discord_dir = discord_dir.to_string_lossy().to_string();
     let asar_path = asar.to_string_lossy().to_string();
 
-    electron_hook::launch(&discord_dir, &library_name, &asar_path, vec![], true).unwrap();
+    electron_hook::launch(&discord_dir, &library_name, &asar_path, vec![], false).unwrap();
 }
 
 async fn download_assets() -> Option<()> {
