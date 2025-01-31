@@ -11,8 +11,10 @@ GITHUB_ORG="MeguminSama"
 REPO_NAME="Vencord-Launcher"
 
 if [[ "$BRANCH" == "ptb" ]]; then
+    BRANCH_UPPER="PTB"
     ASSET_NAME="Vencord${BRANCH^^}-"
 else
+    BRANCH_UPPER="${BRANCH^}"
     ASSET_NAME="Vencord${BRANCH^}-"
 fi
 
@@ -59,9 +61,9 @@ fi
 
 echo "Installing Vencord $BRANCH $VERSION..."
 
-sudo install -m 755 "$TEMP_DIR/vencord-$BRANCH" /usr/local/bin/
+sudo install -Dm 755 "$TEMP_DIR/vencord-$BRANCH" /usr/bin/
 
-OTHER_BRANCHES=$(ls /usr/local/bin | grep 'vencord-' | grep -v "vencord-$BRANCH")
+OTHER_BRANCHES=$(ls /usr/bin | grep 'vencord-' | grep -v "vencord-$BRANCH")
 
 if [ -n "$OTHER_BRANCHES" ]; then
     # TODO: Maybe add a version flag to check if the other branches are outdated?
@@ -69,7 +71,43 @@ if [ -n "$OTHER_BRANCHES" ]; then
     echo "$OTHER_BRANCHES"
 fi
 
-sudo install -m 644 "$TEMP_DIR/libvencord_launcher.so" /usr/local/lib/
-sudo ldconfig /usr/local/lib
+sudo install -Dm 644 "$TEMP_DIR/libvencord_launcher.so" /usr/lib/
+sudo ldconfig /usr/lib
+
+if [[ $BRANCH == "stable" ]]; then
+    DESKTOP_ENTRY_NAME="Vencord"
+    DESKTOP_ENTRY_FILENAME="vencord.desktop"
+else
+    DESKTOP_ENTRY_NAME="Vencord $BRANCH_UPPER"
+    DESKTOP_ENTRY_FILENAME="vencord-$BRANCH.desktop"
+fi
+
+HICOLOR="/usr/share/icons/hicolor"
+
+sudo install -Dm644 "$TEMP_DIR/icons/icon-16x16.png" "$HICOLOR/16x16/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-32x32.png" "$HICOLOR/32x32/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-48x48.png" "$HICOLOR/48x48/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-64x64.png" "$HICOLOR/64x64/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-128x128.png" "$HICOLOR/128x128/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-256x256.png" "$HICOLOR/256x256/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-512x512.png" "$HICOLOR/512x512/vencord-$BRANCH.png"
+sudo install -Dm644 "$TEMP_DIR/icons/icon-1024x1024.png" "$HICOLOR/1024x1024/vencord-$BRANCH.png"
+
+sudo gtk-update-icon-cache /usr/share/icons/hicolor/ || true
+
+DESKTOP_ENTRY="[Desktop Entry]
+Name=$DESKTOP_ENTRY_NAME
+Comment=$DESKTOP_ENTRY_NAME Launcher
+GenericName=Internet Messenger
+Exec=/usr/bin/vencord-$BRANCH
+Icon=vencord-$BRANCH
+Terminal=false
+Type=Application
+Categories=Network;InstantMessaging;
+StartupWMClass=vencord-$BRANCH"
+
+echo "$DESKTOP_ENTRY" | sudo tee "/usr/share/applications/$DESKTOP_ENTRY_FILENAME" > /dev/null
+
+echo "Desktop entry written to /usr/share/applications/$DESKTOP_ENTRY_FILENAME"
 
 rm -r "$TEMP_DIR"
