@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
+# Check if sudo is available
+if command -v sudo >/dev/null 2>&1; then
+    PRIV_ESC="sudo"
+# If sudo is not available, check if doas is available
+elif command -v doas >/dev/null 2>&1; then
+    PRIV_ESC="doas"
+else
+    echo "Error: Neither sudo nor doas is installed. Please install one of them."
+    exit 1
+fi
+
 BRANCH="${1:-stable}"
 
 if [[ ! "$BRANCH" =~ ^(stable|canary|ptb)$ ]]; then
@@ -61,7 +72,7 @@ fi
 
 echo "Installing Vencord $BRANCH $VERSION..."
 
-sudo install -Dm 755 "$TEMP_DIR/vencord-$BRANCH" /usr/bin/
+$PRIV_ESC install -Dm 755 "$TEMP_DIR/vencord-$BRANCH" /usr/bin/
 
 OTHER_BRANCHES=$(ls /usr/bin | grep 'vencord-' | grep -v "vencord-$BRANCH")
 
@@ -71,8 +82,8 @@ if [ -n "$OTHER_BRANCHES" ]; then
     echo "$OTHER_BRANCHES"
 fi
 
-sudo install -Dm 644 "$TEMP_DIR/libvencord_launcher.so" /usr/lib/
-sudo ldconfig /usr/lib
+$PRIV_ESC install -Dm 644 "$TEMP_DIR/libvencord_launcher.so" /usr/lib/
+$PRIV_ESC ldconfig /usr/lib
 
 if [[ $BRANCH == "stable" ]]; then
     DESKTOP_ENTRY_NAME="Vencord"
@@ -84,16 +95,16 @@ fi
 
 HICOLOR="/usr/share/icons/hicolor"
 
-sudo install -Dm644 "$TEMP_DIR/icons/icon-16x16.png" "$HICOLOR/16x16/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-32x32.png" "$HICOLOR/32x32/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-48x48.png" "$HICOLOR/48x48/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-64x64.png" "$HICOLOR/64x64/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-128x128.png" "$HICOLOR/128x128/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-256x256.png" "$HICOLOR/256x256/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-512x512.png" "$HICOLOR/512x512/apps/vencord-$BRANCH.png"
-sudo install -Dm644 "$TEMP_DIR/icons/icon-1024x1024.png" "$HICOLOR/1024x1024/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-16x16.png" "$HICOLOR/16x16/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-32x32.png" "$HICOLOR/32x32/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-48x48.png" "$HICOLOR/48x48/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-64x64.png" "$HICOLOR/64x64/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-128x128.png" "$HICOLOR/128x128/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-256x256.png" "$HICOLOR/256x256/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-512x512.png" "$HICOLOR/512x512/apps/vencord-$BRANCH.png"
+$PRIV_ESC install -Dm644 "$TEMP_DIR/icons/icon-1024x1024.png" "$HICOLOR/1024x1024/apps/vencord-$BRANCH.png"
 
-sudo gtk-update-icon-cache /usr/share/icons/hicolor/ || true
+$PRIV_ESC gtk-update-icon-cache /usr/share/icons/hicolor/ || true
 
 DESKTOP_ENTRY="[Desktop Entry]
 Name=$DESKTOP_ENTRY_NAME
@@ -106,7 +117,7 @@ Type=Application
 Categories=Network;InstantMessaging;
 StartupWMClass=vencord-$BRANCH"
 
-echo "$DESKTOP_ENTRY" | sudo tee "/usr/share/applications/$DESKTOP_ENTRY_FILENAME" > /dev/null
+echo "$DESKTOP_ENTRY" | $PRIV_ESC tee "/usr/share/applications/$DESKTOP_ENTRY_FILENAME" > /dev/null
 
 echo "Desktop entry written to /usr/share/applications/$DESKTOP_ENTRY_FILENAME"
 
