@@ -51,7 +51,7 @@ jobs:
         if: startsWith(matrix.os, 'windows')
         run: |
           mkdir -p artifacts/windows
-          cp "target/release/Vencord Installer.exe" "artifacts/windows/Vencord-Installer-${{ github.ref_name }}.exe"
+          cp "target/release/Vencord Installer.exe" "artifacts/windows/VencordInstaller.exe"
 
       - name: Package Linux artifacts
         if: startsWith(matrix.os, 'ubuntu')
