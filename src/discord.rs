@@ -10,6 +10,7 @@ pub enum DiscordBranch {
 
 #[cfg(windows)]
 pub fn get_discord(branch: DiscordBranch) -> Option<PathBuf> {
+    use crate::windows::get_latest_executable;
     let local_appdata = dirs::data_local_dir()?;
 
     let name = match branch {
