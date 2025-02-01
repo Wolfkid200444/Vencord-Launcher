@@ -82,7 +82,7 @@ pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str
         .with_id(instance_id)
         .with_mod_entrypoint(&mod_entrypoint)
         .with_template("require('$ENTRYPOINT');")
-        .with_wm_class(&format!("vencord-{branch_name}"))
+        .with_wm_class(&format!("equicord-{branch_name}"))
         .create()
         .unwrap();
 
@@ -116,10 +116,10 @@ async fn download_assets() -> Option<()> {
     // Get the latest release manifest from GitHub. If it fails, try the fallback.
     println!("[Vencord Launcher] Checking for updates...");
     let mut response = ureq::get(constants::RELEASE_URL).call().ok()?;
-    if response.status() != 200 {
-        println!("[Vencord Launcher] GitHub ratelimited... Trying fallback...");
-        response = ureq::get(constants::RELEASE_URL_FALLBACK).call().ok()?;
-    }
+    // if response.status() != 200 {
+    //     println!("[Vencord Launcher] GitHub ratelimited... Trying fallback...");
+    //     response = ureq::get(constants::RELEASE_URL_FALLBACK).call().ok()?;
+    // }
     let body = response.body_mut().read_to_string().ok()?;
 
     let json: JsonValue = body.parse().ok()?;

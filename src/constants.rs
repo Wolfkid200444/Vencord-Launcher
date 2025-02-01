@@ -5,8 +5,8 @@ pub static LIBRARY: &str = "vencord_launcher";
 pub static LIBRARY: &str = "vencord_launcher.so";
 
 pub static MOD_ENTRYPOINT: &str = "patcher.js";
-pub static RELEASE_URL: &str = "https://api.github.com/repos/vendicated/vencord/releases/latest";
-pub static RELEASE_URL_FALLBACK: &str = "https://vencord.dev/releases/vencord";
+pub static RELEASE_URL: &str = "https://api.github.com/repos/Equicord/Equicord/releases/latest";
+// pub static RELEASE_URL_FALLBACK: &str = "https://vencord.dev/releases/vencord";
 pub static RELEASE_INFO_FILE: &str = "release.json";
 pub static RELEASE_ASSETS: &[&str] = &[
     // Patcher
