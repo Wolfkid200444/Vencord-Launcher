@@ -27,6 +27,7 @@ struct GithubReleaseAsset {
 }
 
 pub async fn launch(instance_id: &str, branch: DiscordBranch, display_name: &str) {
+    std::env::set_var("DISABLE_UPDATER_AUTO_PATCHING", "true");
     let Some(discord_dir) = discord::get_discord(branch) else {
         let title = format!("No {display_name} installation found!");
         let message = format!(
